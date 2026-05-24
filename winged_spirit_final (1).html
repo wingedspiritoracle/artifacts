@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0e0614;--surface:#1a0d2e;--surface2:#221040;--accent:#c945c8;--as:rgba(201,69,200,0.15);--fg:#ede0f5;--fg2:rgba(237,224,245,0.72);--fg3:rgba(237,224,245,0.38);--border:rgba(201,69,200,0.28);--b2:rgba(201,69,200,0.12);--sage:#7fc4a8;--r:14px;--rm:8px}
+html{background:var(--bg);color:var(--fg);font-family:'Fraunces',Georgia,serif;font-size:17px;line-height:1.65}
+body{min-height:100vh;background:var(--bg)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+#root{max-width:500px;margin:0 auto;padding:24px 18px 64px}
+.header{text-align:center;padding:28px 0 30px}
+.header-icon{display:block;margin:0 auto 14px;opacity:0.75}
+.header h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:400;font-style:italic;color:var(--fg);line-height:1.3}
+.header p{font-family:'Space Mono',monospace;font-size:11px;color:var(--fg3);margin-top:8px;letter-spacing:0.1em;text-transform:uppercase}
+.connector{width:1px;height:22px;background:linear-gradient(to bottom,var(--border),var(--b2));margin:0 auto}
+.card{background:var(--surface);border:1px solid var(--b2);border-radius:var(--r);padding:22px 20px;transition:border-color 0.3s}
+.card.touched{border-color:rgba(201,69,200,0.3)}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.card-num{font-family:'Space Mono',monospace;font-size:10px;color:var(--fg3);letter-spacing:0.14em}
+.card-title{font-family:'Playfair Display',serif;font-size:21px;font-weight:600;color:var(--accent);flex:1;line-height:1}
+.card-check{width:20px;height:20px;border-radius:50%;border:1px solid var(--sage);background:rgba(127,196,168,0.12);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;flex-shrink:0}
+.card.touched .card-check{opacity:1}
+.card-check svg{width:11px;height:11px;stroke:var(--sage);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.card-q{font-size:14px;color:var(--fg2);font-style:italic;margin-bottom:16px;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:10px 16px;border:1px solid var(--border);border-radius:24px;font-size:14px;cursor:pointer;color:var(--fg2);transition:all 0.18s;min-height:46px;display:flex;align-items:center;line-height:1.3;font-family:'Fraunces',serif;text-align:left;background:none}
+.chip:hover{border-color:var(--accent);color:var(--fg);background:var(--as)}
+.chip.on{background:var(--as);border-color:var(--accent);color:var(--fg)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.result{background:rgba(201,69,200,0.06);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;position:relative;overflow:hidden;min-height:130px}
+.result::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0.6}
+.result-eye{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:16px}
+.result-type{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;font-style:italic;color:var(--accent);margin-bottom:12px;line-height:1.25}
+.result-desc{font-family:'Fraunces',serif;font-size:16px;font-weight:300;color:var(--fg);line-height:1.7;margin-bottom:18px}
+.divider{width:100%;height:1px;background:var(--b2);margin:16px 0}
+.what-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px}
+.expect-item{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}
+.expect-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:9px;opacity:0.7}
+.expect-text{font-family:'Fraunces',serif;font-size:14px;color:var(--fg2);line-height:1.6;font-style:italic}
+.note-box{background:rgba(155,61,168,0.1);border:1px solid rgba(201,69,200,0.2);border-radius:var(--rm);padding:14px 16px;margin-top:14px}
+.note-box p{font-family:'Fraunces',serif;font-size:14px;color:var(--fg2);line-height:1.65;font-style:italic}
+.timing-line{font-family:'Space Mono',monospace;font-size:11px;color:var(--fg3);margin-top:12px;line-height:1.6}
+.cta{margin-top:20px;padding-top:18px;border-top:1px solid var(--b2)}
+.cta-text{font-family:'Fraunces',serif;font-size:15px;color:var(--fg2);line-height:1.65;margin-bottom:14px;font-style:italic}
+.cta-buttons{display:flex;flex-wrap:wrap;gap:9px}
+.btn{padding:10px 18px;border:1px solid var(--border);border-radius:24px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.07em;cursor:pointer;color:var(--fg2);transition:all 0.18s;min-height:46px;display:inline-flex;align-items:center;gap:6px;background:none;text-decoration:none}
+.btn:hover,.btn:focus-visible{background:var(--as);border-color:var(--accent);color:var(--fg)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.primary{background:var(--as);border-color:var(--accent);color:var(--fg)}
+.result-placeholder{font-family:'Fraunces',serif;font-size:15px;color:var(--fg3);font-style:italic;line-height:1.7}
+.reset-row{text-align:center;margin-top:26px}
+.reset-btn{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;color:var(--fg3);border:1px solid var(--b2);border-radius:20px;padding:9px 22px;min-height:42px;transition:all 0.2s;background:none;cursor:pointer}
+.reset-btn:hover,.reset-btn:focus-visible{color:var(--fg2);border-color:var(--border)}
+.reset-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<h2 class="sr-only">What are you ready to explore? A short self-guided reflection by Winged Spirit Mediumship that helps you discover what kind of conversation you are most ready to have.</h2>
+<div id="root">
+  <header class="header">
+    <svg class="header-icon" width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M26 4C26 4 8 14 8 28C8 37.941 16.059 46 26 46C35.941 46 44 37.941 44 28C44 14 26 4 26 4Z" fill="rgba(201,69,200,0.25)" stroke="#c945c8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M26 4C26 4 26 20 26 46" stroke="#c945c8" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M26 18C26 18 18 22 14 30" stroke="#c945c8" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+      <path d="M26 24C26 24 34 28 38 36" stroke="#c945c8" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+      <path d="M26 30C26 30 20 32 17 38" stroke="#c945c8" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+    </svg>
+    <h1>What are you ready to explore?</h1>
+    <p>A short reflection &middot; Winged Spirit Mediumship</p>
+  </header>
+  <main>
+    <div class="card" id="c1" aria-labelledby="c1t">
+      <div class="card-head"><span class="card-num">01</span><span class="card-title" id="c1t">The Pull</span><span class="card-check" aria-hidden="true"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span></div>
+      <p class="card-q">Something brought you here. Which of these feels closest?</p>
+      <div class="chips" role="radiogroup" aria-label="What brought you here" id="g1"></div>
+    </div>
+    <div class="connector" aria-hidden="true"></div>
+    <div class="card" id="c2" aria-labelledby="c2t">
+      <div class="card-head"><span class="card-num">02</span><span class="card-title" id="c2t">The Feeling</span><span class="card-check" aria-hidden="true"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span></div>
+      <p class="card-q">When you imagine getting some kind of answer or connection, what do you most hope to feel?</p>
+      <div class="chips" role="radiogroup" aria-label="What you hope to feel" id="g2"></div>
+    </div>
+    <div class="connector" aria-hidden="true"></div>
+    <div class="card" id="c3" aria-labelledby="c3t">
+      <div class="card-head"><span class="card-num">03</span><span class="card-title" id="c3t">The Hesitation</span><span class="card-check" aria-hidden="true"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span></div>
+      <p class="card-q">Most people carry a small hesitation. What's yours, if any?</p>
+      <div class="chips" role="radiogroup" aria-label="Your hesitation" id="g3"></div>
+    </div>
+    <div class="connector" aria-hidden="true"></div>
+    <div class="card" id="c4" aria-labelledby="c4t">
+      <div class="card-head"><span class="card-num">04</span><span class="card-title" id="c4t">The Timing</span><span class="card-check" aria-hidden="true"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span></div>
+      <p class="card-q">Where are you in your own process right now?</p>
+      <div class="chips" role="radiogroup" aria-label="Your timing" id="g4"></div>
+    </div>
+    <div class="connector" aria-hidden="true"></div>
+    <div class="result" id="result" aria-live="polite">
+      <p class="result-eye">&#10022; what you're ready for</p>
+      <div id="result-body"><p class="result-placeholder">Answer the questions above — your reflection appears here as you go.</p></div>
+    </div>
+  </main>
+  <div class="reset-row"><button class="reset-btn" onclick="resetAll()">Start over</button></div>
+</div>
+<script>
+const Q1=[{id:'grief',label:'I lost someone and I\'m not done with them yet'},{id:'visitation',label:'I had a dream, a visitation, or something I can\'t explain'},{id:'location',label:'I visited a location and something stayed with me'},{id:'burned',label:'I\'ve had a bad experience with a psychic or medium before'},{id:'stuck',label:'I feel stuck and I\'m not sure why'},{id:'guidance',label:'I want clarity on a decision or direction'},{id:'develop',label:'I sense something in myself I want to understand or develop'},{id:'learn',label:'I want to learn how to do this kind of work myself'},{id:'curious',label:'I want to understand what this kind of work actually is'}];
+const Q2=[{id:'peace',label:'At peace — like something settled'},{id:'heard',label:'Heard — like someone on the other side knows'},{id:'clear',label:'Clear — like I can see what to do next'},{id:'less_alone',label:'Less alone in this'},{id:'understand',label:'Like I understand something I didn\'t before'},{id:'open',label:'More open and curious than I came in'}];
+const Q3=[{id:'none',label:'Honestly, none — I\'m ready'},{id:'fear',label:'I\'m a little afraid of what I might find out or experience'},{id:'skeptical',label:'I\'m a little skeptical about how this works'},{id:'predict',label:'I\'m worried about being told things I don\'t want to hear'},{id:'raw',label:'I\'m worried it might be too emotional'},{id:'private',label:'I\'m a private person and this feels vulnerable'},{id:'worthy',label:'I\'m not sure I\'m ready or worthy of this'}];
+const Q4=[{id:'fresh',label:'Fresh — the loss or question is very recent'},{id:'sitting',label:'I\'ve been sitting with this for a while'},{id:'tried',label:'I\'ve tried other things and they didn\'t quite reach it'},{id:'circling',label:'I keep circling back to this — it won\'t leave me'},{id:'jump',label:'I\'m ready to go deep — I\'m not holding back'},{id:'just_know',label:'I just know it\'s time'}];
+const ALWAYS=['Sessions don\'t include predictive readings — the work is about what\'s present, not what\'s predetermined.','Whatever comes up — laughter, tears, silence — there\'s room for all of it. You won\'t be rushed.','After a session, you\'re not on your own. Questions about what came through are always welcome.'];
+const RESULTS={grief:{type:'A mediumship reading',desc:'You\'re carrying a love that didn\'t end when a life did. What you\'re ready for is real contact — not comfort talk, but actual evidence that the connection continues. Mediumship at its best isn\'t about messages. It\'s about presence.',note:'Sessions go in "cold" — without prior research into who you\'ve lost. That\'s intentional. The less that\'s known going in, the more meaningful what comes through tends to be.'},visitation:{type:'An evidential mediumship session',desc:'Something happened that your usual framework doesn\'t quite account for — and you haven\'t been able to let it go. That experience is worth taking seriously. A session can help you understand what it might mean, and whether there\'s more where it came from.',note:'Bring the experience as you remember it. You don\'t need to have a theory about what it was.'},location:{type:'A location or investigative reading',desc:'Some experiences follow you home from a place. A location reading works with what you encountered — not to explain it away, but to understand what was actually there and what it might have been communicating.',note:'This is investigative work, approached empirically. You\'re not asked to believe anything — just to notice what comes through and decide for yourself what it means.'},burned:{type:'A different kind of conversation',desc:'If someone has told you that you\'re going to die early, or that you need to pay to have something "fixed" — that\'s not mediumship. That\'s manipulation, and it\'s unfortunately common enough that it deserves to be named. This work operates completely differently. There are no predictions, no upselling, no manufactured fear. What happens in a session is either evidential or it isn\'t — and you\'re always the one who decides what it means.',note:'Skepticism earned through bad experience is completely reasonable. You\'re not asked to trust blindly — just to notice what comes through and evaluate it yourself. The door is open whenever you\'re ready, and there\'s no pressure to walk through it.'},stuck:{type:'An intuitive guidance session',desc:'Something is in the way and you\'ve tried thinking your way through it. Sometimes what\'s needed isn\'t more analysis — it\'s a different kind of listening. This kind of session works with your own intuitive field to find what\'s been out of reach.',note:'You don\'t need to know what the block is. That\'s part of what the session is there to find.'},guidance:{type:'An oracle card reading',desc:'You have a real question and you want a framework for thinking about it that isn\'t just your own internal loop. Oracle work — done well — creates that distance. It reflects something back that you already know but can\'t quite access directly.',note:'Bring one real question rather than a list. The clarity usually comes in the sitting-with, not the explaining.'},develop:{type:'An intuitive guidance session',desc:'You sense something in yourself that wants to be understood — an awareness, a knowing, a pull toward this kind of work. A session can help you locate what that is and what it might be asking of you.',note:'Many people who arrive this way find the session itself is the first confirmation they were looking for.'},learn:{type:'A self-development practice',desc:'A consistent practice — reading oracle cards, exploring automatic writing, learning to interpret your dreams — isn\'t about getting answers handed to you. It\'s about learning to hear yourself more clearly. Over time, that kind of listening tends to deepen your understanding of who you are and what the transitions ahead of you are asking of you.',note:'Workshops covering a range of practices are available in person and expanding online. Oracle cards are a natural starting point — accessible, concrete, and genuinely illuminating. No prior experience or particular belief required.'},curious:{type:'A curiosity session',desc:'You want to understand what this work actually is before committing to anything. That\'s a completely reasonable place to start — and the empirical, non-dogmatic approach here means you\'ll never be asked to accept anything on faith.',note:'These are some of the most interesting sessions. You bring the questions; the work brings the evidence — and you decide what to make of it.'}};
+const HESITATION={fear:'That\'s one of the most honest things a person can bring to this. Fear around this kind of work is common — sometimes it comes from not knowing what to expect, and sometimes it comes from being taught that this territory is off-limits or dangerous, or from having trusted something spiritual before and been hurt by it. All of that is completely understandable. What happens here is quiet, grounded, and entirely in your hands. Nothing is forced or performed, and you\'re never pushed further than you want to go. Whatever your relationship with the unseen has been — joyful, painful, complicated, or all three — there\'s room for that here.',skeptical:'On skepticism: this work is approached empirically. You\'re never asked to believe anything going in. The point is to notice what comes through and evaluate it yourself.',predict:'Just to be clear: sessions here don\'t include predictive readings. The work is about what\'s present and what\'s real — not what\'s supposedly coming.',raw:'Being moved is part of it, and there\'s no wrong way to respond. Sessions are private and unhurried — you set the pace.',private:'Everything that happens in a session stays there. You\'re never asked to share more than you want to.',worthy:'There\'s no threshold to meet here. Whatever you\'re carrying right now is exactly enough to begin with.'};
+const TIMING={fresh:'Coming in close to the experience can actually be an advantage — the connection tends to be vivid.',circling:'When something won\'t leave you alone, that\'s usually worth paying attention to.',tried:'Sometimes a different kind of listening reaches what other things couldn\'t.',jump:'That kind of readiness is its own form of preparation. Let\'s go.',just_know:'Trusting that knowing is as good a place as any to begin.'};
+const DM={grief:'I lost someone and I\'m not done with them yet',visitation:'I had a dream, a visitation, or something I can\'t explain',location:'I visited a location and something stayed with me',burned:'I\'ve had a bad experience with a psychic or medium before',stuck:'I feel stuck and I\'m not sure why',guidance:'I want clarity on a decision or direction',develop:'I sense something in myself I want to understand or develop',learn:'I want to learn how to do this kind of work myself',curious:'I want to understand what this kind of work actually is'};
+const FM={peace:'At peace',heard:'Heard — like someone on the other side knows',clear:'Clear — like I can see what to do next',less_alone:'Less alone in this',understand:'Like I understand something I didn\'t before',open:'More open and curious'};
+const HM={none:'None — I\'m ready',fear:'A little afraid',skeptical:'A little skeptical',predict:'Worried about predictions',raw:'Worried it might be too emotional',private:'I\'m a private person',worthy:'Not sure if I\'m ready or worthy'};
+const TM={fresh:'Fresh — very recent',sitting:'Been sitting with this a while',tried:'Tried other things',circling:'Keep circling back',jump:'Ready to go deep',just_know:'I just know it\'s time'};
+let state={g1:null,g2:null,g3:null,g4:null};
+function getResult(){const{g1,g2}=state;if(!g1&&!g2&&!state.g3&&!state.g4)return null;if(g1&&RESULTS[g1])return RESULTS[g1];if(g2==='heard'||g2==='peace')return RESULTS.grief;if(g2==='clear')return RESULTS.guidance;if(g2==='understand'||g2==='open')return RESULTS.curious;if(g2==='less_alone')return RESULTS.stuck;return RESULTS.curious;}
+function buildEmailBody(){const r=getResult();return encodeURIComponent('Hi Lynn,\n\nI just completed your reflection tool and wanted to share my results.\n\n'+(state.g1?'What brought me here: '+DM[state.g1]+'\n':'')+(state.g2?'What I hope to feel: '+FM[state.g2]+'\n':'')+(state.g3?'My hesitation: '+HM[state.g3]+'\n':'')+(state.g4?'Where I am: '+TM[state.g4]+'\n':'')+(r?'\nThe tool suggested: '+r.type+'\n':'')+'\nI\'d love to explore working together.\n');}
+function updateResult(){const r=getResult();const body=document.getElementById('result-body');if(!r){body.innerHTML='<p class="result-placeholder">Answer the questions above — your reflection appears here as you go.</p>';return;}const hn=state.g3&&state.g3!=='none'?HESITATION[state.g3]:null;const tn=state.g4?TIMING[state.g4]:null;let html='<p class="result-type">'+r.type+'</p>';html+='<p class="result-desc">'+r.desc+'</p>';if(r.note)html+='<div class="expect-item"><span class="expect-dot"></span><p class="expect-text">'+r.note+'</p></div>';html+='<div class="divider"></div><p class="what-label">What a session is actually like</p>';ALWAYS.forEach(a=>{html+='<div class="expect-item"><span class="expect-dot"></span><p class="expect-text">'+a+'</p></div>';});if(hn)html+='<div class="note-box"><p>'+hn+'</p></div>';if(tn)html+='<p class="timing-line">'+tn+'</p>';html+='<div class="cta"><p class="cta-text">If this feels like the right direction, you\'re welcome to explore working together — or simply sit with what came up here.</p><div class="cta-buttons"><a class="btn primary" href="https://beacons.ai/wingedspiritoracleart" target="_blank" rel="noopener">Explore working together</a><a class="btn" href="mailto:lynn@wingedspiritoracle.com?subject=I%20completed%20your%20reflection%20tool&body='+buildEmailBody()+'">Share my results with Lynn</a></div></div>';body.innerHTML=html;}
+function buildGroup(gid,items,key,cid){const el=document.getElementById(gid);el.innerHTML='';items.forEach(item=>{const btn=document.createElement('button');btn.className='chip'+(state[key]===item.id?' on':'');btn.setAttribute('role','radio');btn.setAttribute('aria-checked',state[key]===item.id?'true':'false');btn.setAttribute('aria-label',item.label);btn.textContent=item.label;btn.addEventListener('click',()=>{state[key]=state[key]===item.id?null:item.id;document.getElementById(cid).classList.toggle('touched',!!state[key]);buildGroup(gid,items,key,cid);updateResult();});btn.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();btn.click();}});el.appendChild(btn);});}
+function resetAll(){state={g1:null,g2:null,g3:null,g4:null};['c1','c2','c3','c4'].forEach(id=>document.getElementById(id).classList.remove('touched'));buildGroup('g1',Q1,'g1','c1');buildGroup('g2',Q2,'g2','c2');buildGroup('g3',Q3,'g3','c3');buildGroup('g4',Q4,'g4','c4');updateResult();}
+window.resetAll=resetAll;
+buildGroup('g1',Q1,'g1','c1');buildGroup('g2',Q2,'g2','c2');buildGroup('g3',Q3,'g3','c3');buildGroup('g4',Q4,'g4','c4');updateResult();
+</script>
+</body>
+</html>
